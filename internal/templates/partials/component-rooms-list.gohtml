@@ -2,9 +2,9 @@
 {{ if len .rooms }}
 <div class="space-y-2">
     {{ range .rooms }}
-    <a href="/rooms/{{.ID}}" hx-get="/api/rooms/{{.ID}}/chat-content" hx-target="#content" hx-swap="innerHTML" hx-push-url="/rooms/{{.ID}}" class="block p-3 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md cursor-pointer">
-        <p class="font-medium text-gray-800 dark:text-gray-100">{{ .Name }}</p>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+    <a href="/rooms/{{.ID}}" hx-get="/api/rooms/{{.ID}}/chat-content" hx-target="#content" hx-swap="innerHTML" hx-push-url="/rooms/{{.ID}}" class="card bg-base-200 hover:bg-base-300 p-3 cursor-pointer">
+        <p class="font-medium text-base-content">{{ .Name }}</p>
+        <p class="text-sm text-base-content/60">
             {{ if .CreatedAt.IsZero }}
             Created recently
             {{ else }}
@@ -15,6 +15,6 @@
     {{ end }}
 </div>
 {{ else }}
-<p class="text-gray-500 dark:text-gray-400">No rooms available. Create one to get started.</p>
+<p class="text-base-content/60">No rooms available. Create one to get started.</p>
 {{ end }}
 {{end}}
