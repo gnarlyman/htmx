@@ -1,0 +1,28 @@
+<div id="chat-messages">
+    {{ if len .chats }}
+        <div class="space-y-4">
+            {{ range .chats }}
+                <div class="bg-gray-50 p-4 rounded-lg new-message">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-medium text-gray-900">{{ .Username }}</h4>
+                            <p class="mt-1 text-gray-800">{{ .Message }}</p>
+                        </div>
+                        <div>
+                            {{ if .CreatedAt.IsZero }}
+                                <span class="text-xs text-gray-500">Just now</span>
+                            {{ else }}
+                                <span class="text-xs text-gray-500">{{ .CreatedAt.Format "Jan 2, 3:04 PM" }}</span>
+                            {{ end }}
+                        </div>
+                    </div>
+                </div>
+            {{ end }}
+        </div>
+    {{ else }}
+        <div class="text-center py-8">
+            <p class="text-gray-500">No messages yet</p>
+            <p class="text-sm text-gray-400 mt-1">Be the first to send a message!</p>
+        </div>
+    {{ end }}
+</div>
