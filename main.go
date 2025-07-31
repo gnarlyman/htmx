@@ -24,7 +24,7 @@ func main() {
 	router := gin.Default()
 
 	// Load all templates in one go
-	templ := template.Must(template.ParseGlob("internal/templates/**/*.html"))
+	templ := template.Must(template.ParseGlob("internal/templates/**/*.gohtml"))
 
 	// Set the template
 	router.SetHTMLTemplate(templ)
