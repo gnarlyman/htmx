@@ -2,7 +2,7 @@
 {{ if len .rooms }}
 <div class="space-y-2">
     {{ range .rooms }}
-    <a href="/rooms/{{.ID}}" hx-get="/api/rooms/{{.ID}}/chat-content" hx-target="#content" hx-swap="innerHTML" hx-push-url="/rooms/{{.ID}}" class="card bg-base-200 hover:bg-base-300 p-3 cursor-pointer">
+        <a href="/rooms/{{.ID}}" hx-get="/api/rooms/{{.ID}}/chat-content" hx-target="#chat-content" hx-swap="innerHTML" hx-push-url="/rooms/{{.ID}}" class="card bg-base-200 hover:bg-base-300 p-3 cursor-pointer">
         <p class="font-medium text-base-content">{{ .Name }}</p>
         <p class="text-sm text-base-content/60">
             {{ if .CreatedAt.IsZero }}

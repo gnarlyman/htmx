@@ -61,6 +61,7 @@
             <!-- Right Content: Chat -->
             <div id="content" class="col-span-3 card bg-base-100 shadow-xl">
                 <div class="card-body flex flex-col h-full">
+                    <div id="chat-content">
                     {{if .room}}
                         {{template "partials/room-page.html" .}}
                     {{else}}
@@ -71,6 +72,7 @@
                             </div>
                         </div>
                     {{end}}
+                    </div>
                 </div>
             </div>
         </div>
