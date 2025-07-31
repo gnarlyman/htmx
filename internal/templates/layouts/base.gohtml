@@ -33,13 +33,13 @@
 <main class="flex-grow container mx-auto p-4 flex flex-col md:flex-row gap-4">
     <!-- Left Sidebar: Rooms -->
     <aside class="w-full md:w-1/4 bg-white rounded-lg shadow-md p-4 overflow-y-auto">
-        {{template "partials/rooms-sidebar.html" .}}
+        {{template "partials/sidebar-rooms.html" .}}
     </aside>
 
     <!-- Right Content: Chat -->
     <section id="content" class="w-full md:w-3/4 bg-white rounded-lg shadow-md p-4 flex flex-col">
         {{if .room}}
-        {{template "partials/chat-content.html" .}}
+        {{template "partials/room-page.html" .}}
         {{else}}
         <div class="flex-grow flex items-center justify-center text-gray-500">
             Select a room to start chatting

@@ -127,7 +127,7 @@ func (h *Handler) Home(c *gin.Context) {
 	}
 
 	if c.Request.Header.Get("HX-Request") == "true" {
-		c.HTML(http.StatusOK, "partials/index-content.html", data)
+		c.HTML(http.StatusOK, "partials/home-page.html", data)
 		return
 	}
 
@@ -152,7 +152,7 @@ func (h *Handler) RoomDetail(c *gin.Context) {
 	}
 
 	if c.Request.Header.Get("HX-Request") == "true" {
-		c.HTML(http.StatusOK, "partials/chat-content.html", data)
+		c.HTML(http.StatusOK, "partials/room-page.html", data)
 		return
 	}
 
@@ -161,7 +161,7 @@ func (h *Handler) RoomDetail(c *gin.Context) {
 
 // GetRooms returns the rooms list partial for HTMX
 func (h *Handler) GetRooms(c *gin.Context) {
-	c.HTML(http.StatusOK, "partials/rooms.html", gin.H{
+	c.HTML(http.StatusOK, "partials/component-rooms-list.html", gin.H{
 		"rooms": h.RoomStore.GetRooms(),
 	})
 }
@@ -173,7 +173,7 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 	}
 
 	if err := c.ShouldBind(&input); err != nil {
-		c.HTML(http.StatusBadRequest, "partials/room-form.html", gin.H{
+		c.HTML(http.StatusBadRequest, "partials/error-room-form.html", gin.H{
 			"error": "Room name is required",
 		})
 		return
@@ -190,7 +190,7 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 	// Broadcast update
 	hub.broadcast <- []byte("new-room")
 
-	c.HTML(http.StatusOK, "partials/rooms.html", gin.H{
+	c.HTML(http.StatusOK, "partials/component-rooms-list.html", gin.H{
 		"rooms": h.RoomStore.GetRooms(),
 	})
 	c.Writer.Write([]byte(`<div id="room-form-error" hx-swap-oob="innerHTML"></div>`))
@@ -205,7 +205,7 @@ func (h *Handler) GetChats(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "partials/chats.html", gin.H{
+	c.HTML(http.StatusOK, "partials/component-messages-list.html", gin.H{
 		"chats":  h.ChatStore.GetChatsByRoom(roomID),
 		"roomID": roomID,
 	})
@@ -226,7 +226,7 @@ func (h *Handler) CreateChat(c *gin.Context) {
 	}
 
 	if err := c.ShouldBind(&input); err != nil {
-		c.HTML(http.StatusBadRequest, "partials/chat-form.html", gin.H{
+		c.HTML(http.StatusBadRequest, "partials/error-chat-form.html", gin.H{
 			"error":  "Username and message are required",
 			"roomID": roomID,
 		})
@@ -246,7 +246,7 @@ func (h *Handler) CreateChat(c *gin.Context) {
 	// Broadcast update (could be room-specific, but global for simplicity)
 	hub.broadcast <- []byte("new-chat")
 
-	c.HTML(http.StatusOK, "partials/chats.html", gin.H{
+	c.HTML(http.StatusOK, "partials/component-messages-list.html", gin.H{
 		"chats":  h.ChatStore.GetChatsByRoom(roomID),
 		"roomID": roomID,
 	})
@@ -267,5 +267,5 @@ func (h *Handler) GetChatContent(c *gin.Context) {
 		"chats": h.ChatStore.GetChatsByRoom(roomID),
 	}
 
-	c.HTML(http.StatusOK, "partials/chat-content.html", data)
+	c.HTML(http.StatusOK, "partials/room-page.html", data)
 }
