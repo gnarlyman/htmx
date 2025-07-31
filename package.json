@@ -1,0 +1,13 @@
+{
+  "name": "htmx-chat",
+  "version": "1.0.0",
+  "description": "HTMX Chat with DaisyUI",
+  "scripts": {
+    "build-css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "build": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "daisyui": "^4.12.0"
+  }
+}

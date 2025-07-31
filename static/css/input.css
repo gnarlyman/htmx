@@ -1,4 +1,8 @@
-/* Custom styles beyond Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles beyond Tailwind and DaisyUI */
 
 /* Smooth scrolling for the chat container */
 .chat-container {
@@ -15,39 +19,6 @@
 
 .new-message {
     animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.dark ::-webkit-scrollbar-track {
-    background: #2d3748;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-    background: #4a5568;
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-    background: #718096;
 }
 
 /* HTMX indicator styles */
