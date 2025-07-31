@@ -3,10 +3,80 @@ package handlers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"htmx/internal/models"
+	"log"
 	"net/http"
 	"time"
 )
+
+// WebSocket Hub for broadcasting updates
+type Hub struct {
+	clients    map[*websocket.Conn]bool
+	broadcast  chan []byte
+	register   chan *websocket.Conn
+	unregister chan *websocket.Conn
+}
+
+var hub = &Hub{
+	clients:    make(map[*websocket.Conn]bool),
+	broadcast:  make(chan []byte),
+	register:   make(chan *websocket.Conn),
+	unregister: make(chan *websocket.Conn),
+}
+
+func (h *Hub) run() {
+	for {
+		select {
+		case conn := <-h.register:
+			h.clients[conn] = true
+		case conn := <-h.unregister:
+			if _, ok := h.clients[conn]; ok {
+				delete(h.clients, conn)
+				conn.Close()
+			}
+		case message := <-h.broadcast:
+			for conn := range h.clients {
+				err := conn.WriteMessage(websocket.TextMessage, message)
+				if err != nil {
+					conn.Close()
+					delete(h.clients, conn)
+				}
+			}
+		}
+	}
+}
+
+// WebSocket Upgrader
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true // Allow all origins for simplicity; restrict in production
+	},
+}
+
+// WS Handler
+func (h *Handler) WS(c *gin.Context) {
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Printf("WebSocket upgrade error: %v", err)
+		return
+	}
+	hub.register <- conn
+
+	go func() {
+		defer func() {
+			hub.unregister <- conn
+		}()
+		for {
+			_, _, err := conn.ReadMessage()
+			if err != nil {
+				return
+			}
+		}
+	}()
+}
 
 // Handler holds the dependencies for all handlers
 type Handler struct {
@@ -20,6 +90,11 @@ func NewHandler(roomStore *models.RoomStore, chatStore *models.ChatStore) *Handl
 		RoomStore: roomStore,
 		ChatStore: chatStore,
 	}
+}
+
+// StartHub starts the WebSocket hub
+func StartHub() {
+	go hub.run()
 }
 
 // SetupRoutes configures all the routes for our application
@@ -37,6 +112,10 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 	router.GET("/api/rooms/:id/chats", h.GetChats)
 	router.POST("/api/rooms/:id/chats", h.CreateChat)
 	router.GET("/api/rooms/:id/chat-content", h.GetChatContent) // New for full chat partial
+	router.GET("/ws", h.WS)
+
+	// Start hub in a goroutine
+	go hub.run()
 }
 
 // Home renders the home page
@@ -108,6 +187,9 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 
 	h.RoomStore.AddRoom(room)
 
+	// Broadcast update
+	hub.broadcast <- []byte("new-room")
+
 	c.HTML(http.StatusOK, "partials/rooms.html", gin.H{
 		"rooms": h.RoomStore.GetRooms(),
 	})
@@ -160,6 +242,9 @@ func (h *Handler) CreateChat(c *gin.Context) {
 	}
 
 	h.ChatStore.AddChat(chat)
+
+	// Broadcast update (could be room-specific, but global for simplicity)
+	hub.broadcast <- []byte("new-chat")
 
 	c.HTML(http.StatusOK, "partials/chats.html", gin.H{
 		"chats":  h.ChatStore.GetChatsByRoom(roomID),

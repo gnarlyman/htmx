@@ -3,7 +3,7 @@
     <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ .room.Name }}</h2>
 
     <!-- Messages List -->
-    <div id="chats-list" hx-get="/api/rooms/{{.room.ID}}/chats" hx-trigger="revealed, every 5s" hx-swap="innerHTML" hx-target="this" class="flex-grow overflow-y-auto mb-4 space-y-4 p-4 bg-gray-50 rounded-md">
+    <div id="chats-list" hx-get="/api/rooms/{{.room.ID}}/chats" hx-trigger="revealed, new-chat from:body" hx-swap="innerHTML" hx-target="this" class="flex-grow overflow-y-auto mb-4 space-y-4 p-4 bg-gray-50 rounded-md">
         <p class="text-gray-500">Loading messages...</p>
     </div>
 

@@ -13,7 +13,7 @@
 </form>
 
 <!-- Rooms List -->
-<div id="rooms-list" hx-get="/api/rooms" hx-trigger="revealed, every 5s" hx-swap="innerHTML" hx-target="this" class="space-y-2">
+<div id="rooms-list" hx-get="/api/rooms" hx-trigger="revealed, new-room from:body" hx-swap="innerHTML" hx-target="this" class="space-y-2">
     <p class="text-gray-500">Loading rooms...</p>
 </div>
 {{end}}

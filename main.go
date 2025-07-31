@@ -39,6 +39,9 @@ func main() {
 	// Set up routes
 	handler.SetupRoutes(router)
 
+	// Start WebSocket hub
+	handlers.StartHub()
+
 	// Start server
 	log.Println("Server starting on http://localhost:8080")
 	if err := router.Run(":8080"); err != nil {
