@@ -1,0 +1,40 @@
+{{define "partials/room-content.html"}}
+
+<a href="/" hx-get="/" hx-target="#content" hx-swap="innerHTML" hx-push-url="/">← Back to Rooms</a>
+
+<h1 class="title">{{ .room.Name }}</h1>
+<p>Room ID: {{ .room.ID }}</p>
+
+<section class="section">
+    <h2 class="title is-4">Chat Messages</h2>
+
+    <div id="chats-list" hx-get="/api/rooms/{{.room.ID}}/chats" hx-trigger="load, every 5s" hx-swap="innerHTML" hx-target="this">
+        <p>Loading messages...</p>
+    </div>
+
+    <progress id="chats-progress" class="progress is-small is-primary" max="100" style="display: none;">Loading...</progress>
+</section>
+
+<section class="section">
+    <h2 class="title is-4">Send Message</h2>
+
+    <form hx-post="/api/rooms/{{.room.ID}}/chats" hx-target="#chats-list" hx-swap="innerHTML">
+        <div class="field">
+            <label>Your Name</label>
+            <input type="text" name="username" placeholder="Enter your name">
+        </div>
+
+        <div class="field">
+            <label>Message</label>
+            <textarea name="message" placeholder="Enter your message"></textarea>
+        </div>
+
+        <div id="chat-form-error"></div>
+
+        <button type="submit" class="button is-primary">
+            Send Message
+        </button>
+    </form>
+</section>
+
+{{end}}

@@ -1,0 +1,30 @@
+{{define "partials/index-content.html"}}
+
+<section class="section">
+    <h1 class="title">Chat Rooms</h1>
+
+    <div id="rooms-list" hx-get="/api/rooms" hx-trigger="load, every 5s" hx-swap="innerHTML" hx-target="this">
+        <p>Loading rooms...</p>
+    </div>
+
+    <progress id="rooms-progress" class="progress is-small is-primary" max="100" style="display: none;">Loading...</progress>
+</section>
+
+<section class="section">
+    <h2 class="title is-4">Create Room</h2>
+
+    <form hx-post="/api/rooms" hx-target="#rooms-list" hx-swap="innerHTML">
+        <div class="field">
+            <label>Room Name</label>
+            <input type="text" name="name" placeholder="Enter room name">
+        </div>
+
+        <div id="room-form-error"></div>
+
+        <button type="submit" class="button is-primary">
+            Create Room
+        </button>
+    </form>
+</section>
+
+{{end}}

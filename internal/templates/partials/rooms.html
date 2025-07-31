@@ -1,34 +1,30 @@
-{{ define "partials/rooms.html" }}
-<div id="rooms-list">
-    {{ if len .rooms }}
-        <ul class="divide-y divide-gray-200">
-            {{ range .rooms }}
-                <li class="py-3">
-                    <a href="/rooms/{{ .ID }}" class="block hover:bg-gray-50 transition duration-150 ease-in-out rounded-md p-2 -m-2">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-900">{{ .Name }}</h3>
-                                {{ if .CreatedAt.IsZero }}
-                                    <p class="text-sm text-gray-500">Created recently</p>
-                                {{ else }}
-                                    <p class="text-sm text-gray-500">Created {{ .CreatedAt.Format "Jan 2, 2006" }}</p>
-                                {{ end }}
-                            </div>
-                            <div>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    View
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-            {{ end }}
-        </ul>
-    {{ else }}
-        <div class="text-center py-8">
-            <p class="text-gray-500">No rooms available</p>
-            <p class="text-sm text-gray-400 mt-1">Create a new room to get started</p>
+{{define "partials/rooms.html"}}
+
+{{ if len .rooms }}
+<ul class="list">
+    {{ range .rooms }}
+    <li class="list-item">
+        <div class="box">
+            <p class="title is-5">{{ .Name }}</p>
+            <p>
+                {{ if .CreatedAt.IsZero }}
+                Created recently
+                {{ else }}
+                Created {{ .CreatedAt.Format "Jan 2, 2006" }}
+                {{ end }}
+            </p>
+            <a href="/rooms/{{.ID}}" hx-get="/rooms/{{.ID}}" hx-target="#content" hx-swap="innerHTML" hx-push-url="/rooms/{{.ID}}">
+                View
+            </a>
         </div>
+    </li>
     {{ end }}
+</ul>
+{{ else }}
+<div class="notification is-info">
+    <p>No rooms available</p>
+    <p>Create a new room to get started</p>
 </div>
 {{ end }}
+
+{{end}}

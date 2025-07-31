@@ -1,5 +1,6 @@
 {{ define "partials/chats.html" }}
-<div id="chat-messages">
+
+<div id="chats-list">
     {{ if len .chats }}
     <div class="space-y-4">
         {{ range .chats }}
@@ -27,4 +28,5 @@
     </div>
     {{ end }}
 </div>
+
 {{ end }}

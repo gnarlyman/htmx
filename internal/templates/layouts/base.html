@@ -1,33 +1,34 @@
-{{ define "layouts/base.html" }}
+{{define "layouts/base.html"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .title }}</title>
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/custom.css">
+    <title>{{.title}}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <header class="bg-blue-600 text-white p-4 shadow-md">
-        <div class="container mx-auto">
-            <h1 class="text-2xl font-bold"><a href="/static">Chat Rooms</a></h1>
-        </div>
-    </header>
+<body>
+<section class="hero is-primary">
+    <div class="hero-body">
+        <p class="title">Chat Rooms</p>
+    </div>
+</section>
 
-    <main class="container mx-auto p-4">
-        {{ template "content" . }}
-    </main>
+<main id="content" class="section">
+    {{if eq .Page "home"}}
+    {{template "partials/index-content.html" .}}
+    {{else if eq .Page "room"}}
+    {{template "partials/room-content.html" .}}
+    {{end}}
+</main>
 
-    <footer class="bg-gray-200 p-4 mt-8">
-        <div class="container mx-auto text-center text-gray-600">
-            <p>HTMX Chat Demo &copy; 2025</p>
-        </div>
-    </footer>
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>HTMX Chat Demo © 2025</p>
+    </div>
+</footer>
 </body>
 </html>
-{{ end }}
+{{end}}

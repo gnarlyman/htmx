@@ -1,0 +1,1 @@
+Get-ChildItem -Recurse -File | Where-Object { $_.Extension -in @('.go', '.html', '.css', '.txt', '.md') } | ForEach-Object { "=== $($_.FullName) ==="; Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue } | Out-File -FilePath $HOME/Documents/output.txt -Encoding utf8

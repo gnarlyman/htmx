@@ -23,12 +23,8 @@ func main() {
 	// Set up Gin router
 	router := gin.Default()
 
-	// First load the base layout
-	templ := template.Must(template.ParseFiles("internal/templates/layouts/base.html"))
-
-	templ = template.Must(templ.ParseGlob("internal/templates/*.html"))
-	// Then add all other templates
-	templ = template.Must(templ.ParseGlob("internal/templates/**/*.html"))
+	// Load all templates in one go
+	templ := template.Must(template.ParseGlob("internal/templates/**/*.html"))
 
 	// Set the template
 	router.SetHTMLTemplate(templ)
@@ -58,12 +54,12 @@ func addSampleData(roomStore *models.RoomStore, chatStore *models.ChatStore) {
 	generalRoom := &models.Room{
 		ID:        "1",
 		Name:      "General",
-		CreatedAt: now.Add(-24 * time.Hour), // Created yesterday
+		CreatedAt: now.Add(-24 * time.Hour),
 	}
 	techRoom := &models.Room{
 		ID:        "2",
 		Name:      "Technology",
-		CreatedAt: now.Add(-2 * time.Hour), // Created 2 hours ago
+		CreatedAt: now.Add(-2 * time.Hour),
 	}
 
 	roomStore.AddRoom(generalRoom)
@@ -75,7 +71,7 @@ func addSampleData(roomStore *models.RoomStore, chatStore *models.ChatStore) {
 		RoomID:    "1",
 		Username:  "Alice",
 		Message:   "Hello everyone!",
-		CreatedAt: now.Add(-20 * time.Minute), // 20 minutes ago
+		CreatedAt: now.Add(-20 * time.Minute),
 	})
 
 	chatStore.AddChat(&models.Chat{
@@ -83,7 +79,7 @@ func addSampleData(roomStore *models.RoomStore, chatStore *models.ChatStore) {
 		RoomID:    "1",
 		Username:  "Bob",
 		Message:   "Hi Alice, how are you?",
-		CreatedAt: now.Add(-15 * time.Minute), // 15 minutes ago
+		CreatedAt: now.Add(-15 * time.Minute),
 	})
 
 	chatStore.AddChat(&models.Chat{
@@ -91,6 +87,6 @@ func addSampleData(roomStore *models.RoomStore, chatStore *models.ChatStore) {
 		RoomID:    "2",
 		Username:  "Charlie",
 		Message:   "Anyone interested in Go programming?",
-		CreatedAt: now.Add(-5 * time.Minute), // 5 minutes ago
+		CreatedAt: now.Add(-5 * time.Minute),
 	})
 }
