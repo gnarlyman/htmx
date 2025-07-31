@@ -1,3 +1,5 @@
+{{template "layouts/base.html" .}}
+
 {{ define "content" }}
 <div class="mb-4">
     <a href="/" class="text-blue-600 hover:text-blue-800">
@@ -18,7 +20,7 @@
             <!-- Chat messages will be loaded and updated via HTMX -->
             <div id="chat-messages" 
                  class="chat-container"
-                 hx-get="/api/rooms/{{ .room.ID }}/chats" 
+                 hx-get="/api/rooms/{{ .room.ID }}/chats"
                  hx-trigger="load, every 5s, chatsChanged from:body">
                 <div class="animate-pulse">
                     <div class="h-4 bg-gray-200 rounded w-3/4 mb-2.5"></div>
