@@ -1,30 +1,20 @@
 {{define "partials/rooms.html"}}
-
 {{ if len .rooms }}
-<ul class="list">
+<div class="space-y-2">
     {{ range .rooms }}
-    <li class="list-item">
-        <div class="box">
-            <p class="title is-5">{{ .Name }}</p>
-            <p>
-                {{ if .CreatedAt.IsZero }}
-                Created recently
-                {{ else }}
-                Created {{ .CreatedAt.Format "Jan 2, 2006" }}
-                {{ end }}
-            </p>
-            <a href="/rooms/{{.ID}}" hx-get="/rooms/{{.ID}}" hx-target="#content" hx-swap="innerHTML" hx-push-url="/rooms/{{.ID}}">
-                View
-            </a>
-        </div>
-    </li>
+    <a href="/rooms/{{.ID}}" hx-get="/api/rooms/{{.ID}}/chat-content" hx-target="#content" hx-swap="innerHTML" hx-push-url="/rooms/{{.ID}}" class="block p-3 bg-gray-50 hover:bg-gray-100 rounded-md cursor-pointer">
+        <p class="font-medium text-gray-800">{{ .Name }}</p>
+        <p class="text-sm text-gray-500">
+            {{ if .CreatedAt.IsZero }}
+            Created recently
+            {{ else }}
+            Created {{ .CreatedAt.Format "Jan 2, 2006" }}
+            {{ end }}
+        </p>
+    </a>
     {{ end }}
-</ul>
-{{ else }}
-<div class="notification is-info">
-    <p>No rooms available</p>
-    <p>Create a new room to get started</p>
 </div>
+{{ else }}
+<p class="text-gray-500">No rooms available. Create one to get started.</p>
 {{ end }}
-
 {{end}}

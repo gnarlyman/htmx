@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"htmx/internal/models"
-	"log"
 	"net/http"
 	"time"
 )
@@ -37,6 +36,7 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 	router.POST("/api/rooms", h.CreateRoom)
 	router.GET("/api/rooms/:id/chats", h.GetChats)
 	router.POST("/api/rooms/:id/chats", h.CreateChat)
+	router.GET("/api/rooms/:id/chat-content", h.GetChatContent) // New for full chat partial
 }
 
 // Home renders the home page
@@ -44,6 +44,7 @@ func (h *Handler) Home(c *gin.Context) {
 	data := gin.H{
 		"title": "Chat Rooms",
 		"rooms": h.RoomStore.GetRooms(),
+		"Page":  "home",
 	}
 
 	if c.Request.Header.Get("HX-Request") == "true" {
@@ -51,7 +52,6 @@ func (h *Handler) Home(c *gin.Context) {
 		return
 	}
 
-	data["Page"] = "home"
 	c.HTML(http.StatusOK, "layouts/base.html", data)
 }
 
@@ -60,23 +60,23 @@ func (h *Handler) RoomDetail(c *gin.Context) {
 	roomID := c.Param("id")
 	room, exists := h.RoomStore.GetRoom(roomID)
 	if !exists {
-		log.Printf("Room %s not found, redirecting to /", roomID)
 		c.Redirect(http.StatusSeeOther, "/")
 		return
 	}
 
 	data := gin.H{
 		"title": room.Name,
+		"rooms": h.RoomStore.GetRooms(), // For sidebar
 		"room":  room,
 		"chats": h.ChatStore.GetChatsByRoom(roomID),
+		"Page":  "room",
 	}
 
 	if c.Request.Header.Get("HX-Request") == "true" {
-		c.HTML(http.StatusOK, "partials/room-content.html", data)
+		c.HTML(http.StatusOK, "partials/chat-content.html", data)
 		return
 	}
 
-	data["Page"] = "room"
 	c.HTML(http.StatusOK, "layouts/base.html", data)
 }
 
@@ -94,7 +94,6 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 	}
 
 	if err := c.ShouldBind(&input); err != nil {
-		log.Printf("CreateRoom error: %v", err)
 		c.HTML(http.StatusBadRequest, "partials/room-form.html", gin.H{
 			"error": "Room name is required",
 		})
@@ -109,7 +108,6 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 
 	h.RoomStore.AddRoom(room)
 
-	// Return the updated rooms list and clear error
 	c.HTML(http.StatusOK, "partials/rooms.html", gin.H{
 		"rooms": h.RoomStore.GetRooms(),
 	})
@@ -121,7 +119,6 @@ func (h *Handler) GetChats(c *gin.Context) {
 	roomID := c.Param("id")
 	_, exists := h.RoomStore.GetRoom(roomID)
 	if !exists {
-		log.Printf("Room %s not found for GetChats", roomID)
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -137,7 +134,6 @@ func (h *Handler) CreateChat(c *gin.Context) {
 	roomID := c.Param("id")
 	_, exists := h.RoomStore.GetRoom(roomID)
 	if !exists {
-		log.Printf("Room %s not found for CreateChat", roomID)
 		c.Status(http.StatusNotFound)
 		return
 	}
@@ -148,7 +144,6 @@ func (h *Handler) CreateChat(c *gin.Context) {
 	}
 
 	if err := c.ShouldBind(&input); err != nil {
-		log.Printf("CreateChat error: %v", err)
 		c.HTML(http.StatusBadRequest, "partials/chat-form.html", gin.H{
 			"error":  "Username and message are required",
 			"roomID": roomID,
@@ -166,10 +161,26 @@ func (h *Handler) CreateChat(c *gin.Context) {
 
 	h.ChatStore.AddChat(chat)
 
-	// Return the updated chats list and clear error
 	c.HTML(http.StatusOK, "partials/chats.html", gin.H{
 		"chats":  h.ChatStore.GetChatsByRoom(roomID),
 		"roomID": roomID,
 	})
 	c.Writer.Write([]byte(`<div id="chat-form-error" hx-swap-oob="innerHTML"></div>`))
+}
+
+// GetChatContent returns the full chat content partial for HTMX swaps
+func (h *Handler) GetChatContent(c *gin.Context) {
+	roomID := c.Param("id")
+	room, exists := h.RoomStore.GetRoom(roomID)
+	if !exists {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	data := gin.H{
+		"room":  room,
+		"chats": h.ChatStore.GetChatsByRoom(roomID),
+	}
+
+	c.HTML(http.StatusOK, "partials/chat-content.html", data)
 }
