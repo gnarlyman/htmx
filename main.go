@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"html/template"
 	"htmx/internal/handlers"
 	"htmx/internal/models"
 	"log"
@@ -22,19 +21,6 @@ func main() {
 
 	// Set up Gin router
 	router := gin.Default()
-
-	// Load all templates in one go
-	templ := template.Must(template.ParseGlob("internal/templates/**/*.gohtml"))
-
-	// Set the template
-	router.SetHTMLTemplate(templ)
-
-	// Set up template functions
-	router.SetFuncMap(template.FuncMap{
-		"formatTime": func(t time.Time) string {
-			return t.Format("Jan 02, 2006 15:04:05")
-		},
-	})
 
 	// Set up routes
 	handler.SetupRoutes(router)

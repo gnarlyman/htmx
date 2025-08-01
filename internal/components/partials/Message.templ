@@ -1,0 +1,30 @@
+package partials
+
+import "htmx/internal/models"
+
+templ MessageCard(chat *models.Chat) {
+	<div class="card bg-base-100 shadow-sm p-3">
+		<div class="flex justify-between items-start">
+			<div>
+				<p class="font-medium text-base-content">{ chat.Username }</p>
+				<p class="text-base-content/70">{ chat.Message }</p>
+			</div>
+			<p class="text-sm text-base-content/60">
+				if !chat.CreatedAt.IsZero() {
+					{ chat.CreatedAt.Format("Jan 2, 3:04 PM") }
+				} else {
+					Just now
+				}
+			</p>
+		</div>
+	</div>
+}
+
+templ MessagesList(chats []*models.Chat) {
+	for _, chat := range chats {
+		@MessageCard(chat)
+	}
+	if len(chats) == 0 {
+		<p class="text-base-content/60 text-center">No messages yet. Start the conversation!</p>
+	}
+}

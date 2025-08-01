@@ -1,0 +1,29 @@
+package pages
+
+import (
+	"htmx/internal/models"
+	"htmx/internal/components/partials"
+)
+
+templ HomePage(rooms []*models.Room) {
+	<div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-[calc(100vh-8rem)]">
+		<!-- Left Sidebar: Rooms -->
+		<div class="col-span-1 card bg-base-100 shadow-xl">
+			<div class="card-body p-4">
+				@partials.RoomsList(rooms)
+			</div>
+		</div>
+
+		<!-- Right Content: Welcome -->
+		<div id="content" class="col-span-3 card bg-base-100 shadow-xl">
+			<div class="card-body flex flex-col h-full">
+				<div class="flex-grow flex items-center justify-center">
+					<div class="text-center">
+						<div class="text-6xl mb-4">💬</div>
+						<p class="text-base-content/60">Select a room to start chatting</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}

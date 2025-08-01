@@ -1,0 +1,39 @@
+package partials
+
+import "htmx/internal/models"
+
+templ RoomsList(rooms []*models.Room) {
+	<h3 class="text-lg font-bold mb-4">Rooms</h3>
+	<div id="rooms-list" hx-get="/api/rooms" hx-trigger="new-room from:body" hx-swap="innerHTML" hx-target="this" class="space-y-2">
+		for _, room := range rooms {
+			<a href={ templ.URL("/rooms/" + room.ID) } 
+			   hx-get={ "/rooms/" + room.ID } 
+			   hx-target="#content" 
+			   hx-swap="innerHTML" 
+			   hx-push-url={ "/rooms/" + room.ID }
+			   class="block p-3 bg-base-200 hover:bg-base-300 rounded-lg transition-colors">
+				<div class="font-medium">{ room.Name }</div>
+				<div class="text-sm text-base-content/60">
+					if !room.CreatedAt.IsZero() {
+						{ room.CreatedAt.Format("Jan 2, 2006") }
+					} else {
+						Created recently
+					}
+				</div>
+			</a>
+		}
+		if len(rooms) == 0 {
+			<p class="text-base-content/60">No rooms available. Create one to get started.</p>
+		}
+	</div>
+
+	<!-- Create Room Form -->
+	<div class="mt-6 border-t pt-4">
+		<h4 class="font-medium mb-2">Create a new room</h4>
+		<form hx-post="/api/rooms" hx-target="#rooms-list" hx-swap="innerHTML" class="space-y-2">
+			<input type="text" name="name" placeholder="Room name" class="input input-sm input-bordered w-full"/>
+			<button type="submit" class="btn btn-sm btn-primary w-full">Create</button>
+		</form>
+		<div id="room-form-error" class="text-error text-sm mt-1"></div>
+	</div>
+}

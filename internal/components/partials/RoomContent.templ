@@ -1,0 +1,31 @@
+package partials
+
+import "htmx/internal/models"
+
+templ RoomContent(room *models.Room, chats []*models.Chat) {
+	<div class="card-body flex flex-col h-full">
+		<h2 class="text-xl font-bold mb-4 text-base-content">{ room.Name }</h2>
+
+		<!-- Messages Container -->
+		<div class="flex-grow overflow-y-auto mb-4 bg-base-200 rounded-box p-4">
+			<div id="messages-list" 
+			     hx-get={ "/api/rooms/" + room.ID + "/chats" }
+			     hx-trigger="new-chat from:body"
+			     hx-swap="innerHTML"
+			     class="space-y-4">
+				@MessagesList(chats)
+			</div>
+		</div>
+
+		<!-- Send Form -->
+		<form hx-post={ "/api/rooms/" + room.ID + "/chats" } 
+		      hx-target="#messages-list" 
+		      hx-swap="innerHTML" 
+		      class="flex gap-2">
+			<input type="text" name="username" placeholder="Your name" class="input input-bordered w-1/4"/>
+			<input type="text" name="message" placeholder="Type a message" class="input input-bordered flex-grow"/>
+			<button type="submit" class="btn btn-primary">Send</button>
+		</form>
+		<div id="chat-form-error" class="text-error mt-2"></div>
+	</div>
+}

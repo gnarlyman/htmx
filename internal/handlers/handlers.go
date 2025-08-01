@@ -1,14 +1,25 @@
 package handlers
 
 import (
+	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"htmx/internal/components/layouts"
+	"htmx/internal/components/pages"
+	"htmx/internal/components/partials"
 	"htmx/internal/models"
 	"log"
 	"net/http"
 	"time"
 )
+
+// Helper function to render Templ components
+func render(c *gin.Context, status int, template templ.Component) error {
+	c.Header("Content-Type", "text/html")
+	c.Status(status)
+	return template.Render(c.Request.Context(), c.Writer)
+}
 
 // WebSocket Hub for broadcasting updates
 type Hub struct {
@@ -111,7 +122,6 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 	router.POST("/api/rooms", h.CreateRoom)
 	router.GET("/api/rooms/:id/chats", h.GetChats)
 	router.POST("/api/rooms/:id/chats", h.CreateChat)
-	router.GET("/api/rooms/:id/chat-content", h.GetChatContent) // New for full chat partial
 	router.GET("/ws", h.WS)
 
 	// Start hub in a goroutine
@@ -120,21 +130,21 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 
 // Home renders the home page
 func (h *Handler) Home(c *gin.Context) {
-	data := gin.H{
-		"title": "Chat Rooms",
-		"rooms": h.RoomStore.GetRooms(),
-		"Page":  "home",
-	}
+	rooms := h.RoomStore.GetRooms()
+	homePage := pages.HomePage(rooms)
 
 	if c.Request.Header.Get("HX-Request") == "true" {
-		c.HTML(http.StatusOK, "partials/home-page.html", data)
+		// Return just the home content for HTMX requests
+		render(c, http.StatusOK, homePage)
 		return
 	}
 
-	c.HTML(http.StatusOK, "layouts/base.html", data)
+	// Return full page with layout
+	fullPage := layouts.Base("Chat Rooms", homePage)
+	render(c, http.StatusOK, fullPage)
 }
 
-// RoomDetail renders the room detail page
+// RoomDetail renders the room detail page OR just room content for HTMX
 func (h *Handler) RoomDetail(c *gin.Context) {
 	roomID := c.Param("id")
 	room, exists := h.RoomStore.GetRoom(roomID)
@@ -143,27 +153,27 @@ func (h *Handler) RoomDetail(c *gin.Context) {
 		return
 	}
 
-	data := gin.H{
-		"title": room.Name,
-		"rooms": h.RoomStore.GetRooms(), // For sidebar
-		"room":  room,
-		"chats": h.ChatStore.GetChatsByRoom(roomID),
-		"Page":  "room",
-	}
+	rooms := h.RoomStore.GetRooms()
+	chats := h.ChatStore.GetChatsByRoom(roomID)
 
 	if c.Request.Header.Get("HX-Request") == "true" {
-		c.HTML(http.StatusOK, "partials/room-page.html", data)
+		// Return just the room content for HTMX requests
+		roomContent := partials.RoomContent(room, chats)
+		render(c, http.StatusOK, roomContent)
 		return
 	}
 
-	c.HTML(http.StatusOK, "layouts/base.html", data)
+	// Return full page with layout
+	roomPage := pages.RoomPage(room, chats, rooms)
+	fullPage := layouts.Base(room.Name, roomPage)
+	render(c, http.StatusOK, fullPage)
 }
 
 // GetRooms returns the rooms list partial for HTMX
 func (h *Handler) GetRooms(c *gin.Context) {
-	c.HTML(http.StatusOK, "partials/component-rooms-list.html", gin.H{
-		"rooms": h.RoomStore.GetRooms(),
-	})
+	rooms := h.RoomStore.GetRooms()
+	roomsList := partials.RoomsList(rooms)
+	render(c, http.StatusOK, roomsList)
 }
 
 // CreateRoom creates a new room
@@ -173,9 +183,9 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 	}
 
 	if err := c.ShouldBind(&input); err != nil {
-		c.HTML(http.StatusBadRequest, "partials/error-room-form.html", gin.H{
-			"error": "Room name is required",
-		})
+		c.Header("Content-Type", "text/html")
+		c.Status(http.StatusBadRequest)
+		c.Writer.WriteString(`<div class="text-error">Room name is required</div>`)
 		return
 	}
 
@@ -187,12 +197,17 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 
 	h.RoomStore.AddRoom(room)
 
-	// Broadcast update
-	hub.broadcast <- []byte("new-room")
+	// Only broadcast to OTHER users, not the creator
+	go func() {
+		hub.broadcast <- []byte("new-room")
+	}()
 
-	c.HTML(http.StatusOK, "partials/component-rooms-list.html", gin.H{
-		"rooms": h.RoomStore.GetRooms(),
-	})
+	// Return updated rooms list immediately
+	rooms := h.RoomStore.GetRooms()
+	roomsList := partials.RoomsList(rooms)
+	render(c, http.StatusOK, roomsList)
+
+	// Clear error message
 	c.Writer.Write([]byte(`<div id="room-form-error" hx-swap-oob="innerHTML"></div>`))
 }
 
@@ -205,10 +220,9 @@ func (h *Handler) GetChats(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "partials/component-messages-list.html", gin.H{
-		"chats":  h.ChatStore.GetChatsByRoom(roomID),
-		"roomID": roomID,
-	})
+	chats := h.ChatStore.GetChatsByRoom(roomID)
+	messagesList := partials.MessagesList(chats)
+	render(c, http.StatusOK, messagesList)
 }
 
 // CreateChat creates a new chat message
@@ -226,10 +240,9 @@ func (h *Handler) CreateChat(c *gin.Context) {
 	}
 
 	if err := c.ShouldBind(&input); err != nil {
-		c.HTML(http.StatusBadRequest, "partials/error-chat-form.html", gin.H{
-			"error":  "Username and message are required",
-			"roomID": roomID,
-		})
+		c.Header("Content-Type", "text/html")
+		c.Status(http.StatusBadRequest)
+		c.Writer.WriteString(`<div class="text-error">Username and message are required</div>`)
 		return
 	}
 
@@ -243,29 +256,14 @@ func (h *Handler) CreateChat(c *gin.Context) {
 
 	h.ChatStore.AddChat(chat)
 
-	// Broadcast update (could be room-specific, but global for simplicity)
+	// Broadcast update
 	hub.broadcast <- []byte("new-chat")
 
-	c.HTML(http.StatusOK, "partials/component-messages-list.html", gin.H{
-		"chats":  h.ChatStore.GetChatsByRoom(roomID),
-		"roomID": roomID,
-	})
+	// Return updated messages list
+	chats := h.ChatStore.GetChatsByRoom(roomID)
+	messagesList := partials.MessagesList(chats)
+	render(c, http.StatusOK, messagesList)
+
+	// Clear error message
 	c.Writer.Write([]byte(`<div id="chat-form-error" hx-swap-oob="innerHTML"></div>`))
-}
-
-// GetChatContent returns the full chat content partial for HTMX swaps
-func (h *Handler) GetChatContent(c *gin.Context) {
-	roomID := c.Param("id")
-	room, exists := h.RoomStore.GetRoom(roomID)
-	if !exists {
-		c.Status(http.StatusNotFound)
-		return
-	}
-
-	data := gin.H{
-		"room":  room,
-		"chats": h.ChatStore.GetChatsByRoom(roomID),
-	}
-
-	c.HTML(http.StatusOK, "partials/room-page.html", data)
 }
