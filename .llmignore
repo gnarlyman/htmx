@@ -1,0 +1,10 @@
+/tmp
+static/css/output.css
+node_modules
+.git
+.DS_Store
+.idea
+.vscode
+package-lock.json
+*_templ.go
+go.sum

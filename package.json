@@ -4,12 +4,16 @@
   "description": "HTMX Chat with DaisyUI",
   "scripts": {
     "build-css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
-    "build": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
+    "build": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css",
+    "build-min": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
     "generate": "templ generate",
     "dev": "templ generate && npm run build-css"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.0",
-    "daisyui": "^4.12.0"
+    "daisyui": "^5.0.50",
+    "tailwindcss": "^4.1.11"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.11"
   }
 }

@@ -115,6 +115,7 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 
 	// HTML routes
 	router.GET("/", h.Home)
+	router.GET("/test", h.Test)
 	router.GET("/rooms/:id", h.RoomDetail)
 
 	// API routes for HTMX
@@ -142,6 +143,13 @@ func (h *Handler) Home(c *gin.Context) {
 
 	// Return full page with layout
 	fullPage := layouts.Base("Chat Rooms", homePage)
+	render(c, http.StatusOK, fullPage)
+}
+
+// Test renders the test page
+func (h *Handler) Test(c *gin.Context) {
+	// Return full page with layout
+	fullPage := layouts.Test("Chat Rooms")
 	render(c, http.StatusOK, fullPage)
 }
 
