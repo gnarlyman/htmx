@@ -108,7 +108,7 @@ func StartHub() {
 	go hub.run()
 }
 
-// SetupRoutes configures all the routes for our application
+// Update SetupRoutes to include the new endpoint
 func (h *Handler) SetupRoutes(router *gin.Engine) {
 	// Serve static files
 	router.Static("/static", "./static")
@@ -119,6 +119,7 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 
 	// API routes for HTMX
 	router.GET("/api/rooms", h.GetRooms)
+	router.GET("/api/rooms-content", h.GetRoomsContent) // Add this line
 	router.POST("/api/rooms", h.CreateRoom)
 	router.GET("/api/rooms/:id/chats", h.GetChats)
 	router.POST("/api/rooms/:id/chats", h.CreateChat)
@@ -176,6 +177,13 @@ func (h *Handler) GetRooms(c *gin.Context) {
 	render(c, http.StatusOK, roomsList)
 }
 
+// GetRoomsContent returns just the rooms list content for HTMX updates
+func (h *Handler) GetRoomsContent(c *gin.Context) {
+	rooms := h.RoomStore.GetRooms()
+	roomsContent := partials.RoomsListContent(rooms)
+	render(c, http.StatusOK, roomsContent)
+}
+
 // CreateRoom creates a new room
 func (h *Handler) CreateRoom(c *gin.Context) {
 	var input struct {
@@ -197,18 +205,15 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 
 	h.RoomStore.AddRoom(room)
 
-	// Only broadcast to OTHER users, not the creator
+	// Broadcast to other users
 	go func() {
 		hub.broadcast <- []byte("new-room")
 	}()
 
-	// Return updated rooms list immediately
+	// Return ONLY the rooms content (not the full component with form)
 	rooms := h.RoomStore.GetRooms()
-	roomsList := partials.RoomsList(rooms)
-	render(c, http.StatusOK, roomsList)
-
-	// Clear error message
-	c.Writer.Write([]byte(`<div id="room-form-error" hx-swap-oob="innerHTML"></div>`))
+	roomsContent := partials.RoomsListContent(rooms)
+	render(c, http.StatusOK, roomsContent)
 }
 
 // GetChats returns the chats list partial for HTMX
