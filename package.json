@@ -3,17 +3,15 @@
   "version": "1.0.0",
   "description": "HTMX Chat with DaisyUI",
   "scripts": {
-    "build-css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
-    "build": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css",
-    "build-min": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
-    "generate": "templ generate",
-    "dev": "templ generate && npm run build-css"
-  },
-  "devDependencies": {
-    "daisyui": "^5.0.50",
-    "tailwindcss": "^4.1.11"
+    "templ": "templ generate --watch",
+    "css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch=always",
+    "air": "air",
+    "dev": "concurrently \"npm run templ\" \"npm run css\" \"npm run air\""
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.11"
+    "@tailwindcss/cli": "^4.1.11",
+    "concurrently": "^8.2.2",
+    "daisyui": "^5.0.50",
+    "tailwindcss": "^4.1.11"
   }
 }
