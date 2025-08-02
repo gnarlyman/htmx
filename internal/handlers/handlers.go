@@ -4,11 +4,11 @@ import (
 	"htmx/internal/components/layouts"
 	"htmx/internal/components/pages"
 	"htmx/internal/components/partials"
+	"htmx/internal/middleware"
 	"htmx/internal/models"
 	"htmx/static"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/a-h/templ"
@@ -17,14 +17,14 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Helper function to render Templ components
+// render renders Templ components
 func render(c *gin.Context, status int, template templ.Component) error {
 	c.Header("Content-Type", "text/html")
 	c.Status(status)
 	return template.Render(c.Request.Context(), c.Writer)
 }
 
-// WebSocket Hub for broadcasting updates
+// Hub manages WebSocket connections and broadcasts
 type Hub struct {
 	clients    map[*websocket.Conn]bool
 	broadcast  chan []byte
@@ -39,6 +39,7 @@ var hub = &Hub{
 	unregister: make(chan *websocket.Conn),
 }
 
+// run processes WebSocket connection events
 func (h *Hub) run() {
 	for {
 		select {
@@ -61,7 +62,7 @@ func (h *Hub) run() {
 	}
 }
 
-// WebSocket Upgrader
+// upgrader configures WebSocket connection parameters
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -70,7 +71,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-// WS Handler
+// WS handles WebSocket connections
 func (h *Handler) WS(c *gin.Context) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
@@ -92,13 +93,13 @@ func (h *Handler) WS(c *gin.Context) {
 	}()
 }
 
-// Handler holds the dependencies for all handlers
+// Handler contains dependencies for HTTP request handling
 type Handler struct {
 	RoomStore *models.RoomStore
 	ChatStore *models.ChatStore
 }
 
-// NewHandler creates a new handler with the given dependencies
+// NewHandler creates a handler with the given dependencies
 func NewHandler(roomStore *models.RoomStore, chatStore *models.ChatStore) *Handler {
 	return &Handler{
 		RoomStore: roomStore,
@@ -106,22 +107,15 @@ func NewHandler(roomStore *models.RoomStore, chatStore *models.ChatStore) *Handl
 	}
 }
 
-// StartHub starts the WebSocket hub
+// StartHub initializes the WebSocket hub
 func StartHub() {
 	go hub.run()
 }
 
-// Update SetupRoutes to include the new endpoint
+// SetupRoutes configures all application routes
 func (h *Handler) SetupRoutes(router *gin.Engine) {
-	// Disable cache for static files in debug mode to ensure changes (e.g., CSS) are picked up immediately
-	router.Use(func(c *gin.Context) {
-		if gin.Mode() == gin.DebugMode && strings.HasPrefix(c.Request.URL.Path, "/static/") {
-			c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
-			c.Header("Pragma", "no-cache")
-			c.Header("Expires", "0")
-		}
-		c.Next()
-	})
+	// Apply middleware
+	router.Use(middleware.NoCacheMiddleware())
 
 	// Serve embedded static files
 	router.StaticFS("/static/css", static.GetCSSFileSystem())
@@ -144,7 +138,7 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 	go hub.run()
 }
 
-// Home renders the home page
+// Home handles the home page request
 func (h *Handler) Home(c *gin.Context) {
 	rooms := h.RoomStore.GetRooms()
 	homePage := pages.HomePage(rooms)
@@ -160,14 +154,14 @@ func (h *Handler) Home(c *gin.Context) {
 	render(c, http.StatusOK, fullPage)
 }
 
-// Test renders the test page
+// Test handles the test page request
 func (h *Handler) Test(c *gin.Context) {
 	// Return full page with layout
 	fullPage := layouts.Test("Chat Rooms")
 	render(c, http.StatusOK, fullPage)
 }
 
-// RoomDetail renders the room detail page OR just room content for HTMX
+// RoomDetail handles room detail page requests
 func (h *Handler) RoomDetail(c *gin.Context) {
 	roomID := c.Param("id")
 	room, exists := h.RoomStore.GetRoom(roomID)
@@ -192,21 +186,21 @@ func (h *Handler) RoomDetail(c *gin.Context) {
 	render(c, http.StatusOK, fullPage)
 }
 
-// GetRooms returns the rooms list partial for HTMX
+// GetRooms returns the rooms list for HTMX requests
 func (h *Handler) GetRooms(c *gin.Context) {
 	rooms := h.RoomStore.GetRooms()
 	roomsList := partials.RoomsList(rooms)
 	render(c, http.StatusOK, roomsList)
 }
 
-// GetRoomsContent returns just the rooms list content for HTMX updates
+// GetRoomsContent returns rooms list content for HTMX updates
 func (h *Handler) GetRoomsContent(c *gin.Context) {
 	rooms := h.RoomStore.GetRooms()
 	roomsContent := partials.RoomsListContent(rooms)
 	render(c, http.StatusOK, roomsContent)
 }
 
-// CreateRoom creates a new room
+// CreateRoom handles new room creation
 func (h *Handler) CreateRoom(c *gin.Context) {
 	var input struct {
 		Name string `form:"name" binding:"required"`
@@ -238,7 +232,7 @@ func (h *Handler) CreateRoom(c *gin.Context) {
 	render(c, http.StatusOK, roomsContent)
 }
 
-// GetChats returns the chats list partial for HTMX
+// GetChats returns chat messages for a room
 func (h *Handler) GetChats(c *gin.Context) {
 	roomID := c.Param("id")
 	_, exists := h.RoomStore.GetRoom(roomID)
@@ -252,7 +246,7 @@ func (h *Handler) GetChats(c *gin.Context) {
 	render(c, http.StatusOK, messagesList)
 }
 
-// CreateChat creates a new chat message
+// CreateChat handles new chat message creation
 func (h *Handler) CreateChat(c *gin.Context) {
 	roomID := c.Param("id")
 	_, exists := h.RoomStore.GetRoom(roomID)
