@@ -1,17 +1,19 @@
 package handlers
 
 import (
-	"github.com/a-h/templ"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"github.com/gorilla/websocket"
 	"htmx/internal/components/layouts"
 	"htmx/internal/components/pages"
 	"htmx/internal/components/partials"
 	"htmx/internal/models"
 	"log"
 	"net/http"
+	"strings"
 	"time"
+
+	"github.com/a-h/templ"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 )
 
 // Helper function to render Templ components
@@ -110,6 +112,16 @@ func StartHub() {
 
 // Update SetupRoutes to include the new endpoint
 func (h *Handler) SetupRoutes(router *gin.Engine) {
+	// Disable cache for static files in debug mode to ensure changes (e.g., CSS) are picked up immediately
+	router.Use(func(c *gin.Context) {
+		if gin.Mode() == gin.DebugMode && strings.HasPrefix(c.Request.URL.Path, "/static/") {
+			c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+			c.Header("Pragma", "no-cache")
+			c.Header("Expires", "0")
+		}
+		c.Next()
+	})
+
 	// Serve static files
 	router.Static("/static", "./static")
 

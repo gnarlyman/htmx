@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    command: reflex -r '\.go$$' -s -- go run main.go
+    volumes:
+      - .:/app
+      - /app/tmp # Exclude tmp if needed, but optional
+    ports:
+      - "8080:8080"
+    working_dir: /app
+    environment:
+      - GIN_MODE=debug
+    depends_on:
+      - tailwind # Ensure Tailwind is ready if CSS is needed at startup
+
+  templ-proxy:
+    build: .
+    command: templ generate --watch --proxy=http://backend:8080 --proxybind="0.0.0.0" --open-browser=false
+    volumes:
+      - .:/app
+    ports:
+      - "7331:7331"
+    working_dir: /app
+    depends_on:
+      - backend
+
+  tailwind:
+    image: node:20-alpine
+    command: sh -c "npm install && npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch=always"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    working_dir: /app
+
+volumes:
+  node_modules:
