@@ -1,18 +1,36 @@
 package layouts
 
 templ Test(title string) {
-	<!DOCTYPE html>
-	<html lang="en" data-theme="dark">
-	<head>
-		<meta charset="UTF-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<title>{ title }</title>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.6/htmx.min.js" integrity="sha512-fzOjdYXF0WrjlPAGWmlpHv2PnJ1m7yP8QdWj1ORoM7Bc4xmKcDRBOXSOZ4Wedia0mjtGzXQX1f1Ah1HDHAWywg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<link rel="stylesheet" href="/static/css/output.css"/>
-	</head>
-	<script src="/static/js/websocket.js"></script>
-	<body>
-        <div class="">Test</div>
-	</body>
-	</html>
+    <!DOCTYPE html>
+    <html lang="en" data-theme="dark">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>{ title }</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.6/htmx.min.js" integrity="sha512-fzOjdYXF0WrjlPAGWmlpHv2PnJ1m7yP8QdWj1ORoM7Bc4xmKcDRBOXSOZ4Wedia0mjtGzXQX1f1Ah1HDHAWywg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" href="/static/css/output.css"/>
+    </head>
+    <body class="bg-amber-300 flex flex-row justify-evenly items-center h-screen">
+		<div class="bg-amber-800 p-4 m-2 rounded shadow-md flex flex-col justify-between h-90 w-120">
+			<h2 class="text-white font-bold mb-2">Card Title 1</h2>
+			<div class="flex-grow overflow-scroll">
+				<p class="text-amber-200 h-10">This is some card content for Test 1.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 2.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 3.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 4.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 5.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 6.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 7.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 8.</p>
+				<p class="text-amber-200 h-10">This is some card content for Test 9.</p>
+			</div>
+			<button class="mt-4 bg-amber-600 text-white py-1 px-2 rounded">Action</button>
+		</div>
+		<div class="bg-amber-800 p-4 m-2 rounded shadow-md flex flex-col justify-between h-90 w-120">
+			<h2 class="text-white font-bold mb-2">Card Title 2</h2>
+			<p class="text-amber-200">This is some card content for Test 2.</p>
+			<button class="mt-4 bg-amber-600 text-white py-1 px-2 rounded">Action</button>
+		</div>
+    </body>
+    </html>
 }
