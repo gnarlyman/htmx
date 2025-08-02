@@ -9,8 +9,10 @@ templ Base(title string, content templ.Component) {
 		<title>{ title }</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.6/htmx.min.js" integrity="sha512-fzOjdYXF0WrjlPAGWmlpHv2PnJ1m7yP8QdWj1ORoM7Bc4xmKcDRBOXSOZ4Wedia0mjtGzXQX1f1Ah1HDHAWywg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<link rel="stylesheet" href="/static/css/output.css?v=2"/>
+    	<script src="/static/js/websocket.js"></script>
 	</head>
-	<body class="min-h-screen">
+
+	<body class="h-screen flex flex-col">
 		<div class="navbar bg-base-100 shadow-lg">
 			<div class="navbar-start">
 				<h1 class="text-xl font-bold">Chat Rooms</h1>
@@ -31,9 +33,7 @@ templ Base(title string, content templ.Component) {
 			</div>
 		</div>
 
-		<script src="/static/js/websocket.js"></script>
-
-		<main class="container mx-auto p-4">
+		<main class="container mx-auto p-4 h-full">
 			@content
 		</main>
 

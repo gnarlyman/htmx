@@ -13,7 +13,7 @@ import (
 	"htmx/internal/models"
 )
 
-func HomePage(rooms []*models.Room) templ.Component {
+func HomePage(room *models.Room, chats []*models.Chat, rooms []*models.Room) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -34,7 +34,7 @@ func HomePage(rooms []*models.Room) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid grid-cols-1 md:grid-cols-4 gap-4 h-[calc(100vh-8rem)]\"><!-- Left Sidebar: Rooms --><div class=\"col-span-1 card bg-base-100 shadow-xl\"><div class=\"card-body p-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid grid-cols-1 md:grid-cols-4 gap-4 h-full\"><!-- Left Sidebar: Rooms --><div class=\"col-span-1 card bg-base-100 shadow-xl h-full\"><div class=\"card-body flex flex-col justify-between p-4 h-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,7 +42,30 @@ func HomePage(rooms []*models.Room) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><!-- Right Content: Welcome --><div id=\"content\" class=\"col-span-3 card bg-base-100 shadow-xl\"><div class=\"card-body flex flex-col h-full\"><div class=\"flex-grow flex items-center justify-center\"><div class=\"text-center\"><div class=\"text-6xl mb-4\">💬</div><p class=\"text-base-content/60\">Select a room to start chatting</p></div></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if room == nil {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<!-- Right Content: Welcome --> <div id=\"content\" class=\"col-span-3 card bg-base-100 shadow-xl\"><div class=\"card-body flex flex-col\"><div class=\"flex-grow flex items-center justify-center\"><div class=\"text-center\"><div class=\"text-6xl mb-4\">💬</div><p class=\"text-base-content/60\">Select a room to start chatting</p></div></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<!-- Right Content: Chat --> <div id=\"content\" class=\"col-span-3 card bg-base-100 shadow-xl\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = partials.RoomContent(room, chats).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

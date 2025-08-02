@@ -140,8 +140,10 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 
 // Home handles the home page request
 func (h *Handler) Home(c *gin.Context) {
-	rooms := h.RoomStore.GetRooms()
-	homePage := pages.HomePage(rooms)
+	roomID := c.Param("id")
+	room, _ := h.RoomStore.GetRoom(roomID)
+
+	homePage := pages.HomePage(room, h.ChatStore.GetChats(), h.RoomStore.GetRooms())
 
 	if c.Request.Header.Get("HX-Request") == "true" {
 		// Return just the home content for HTMX requests
@@ -181,7 +183,7 @@ func (h *Handler) RoomDetail(c *gin.Context) {
 	}
 
 	// Return full page with layout
-	roomPage := pages.RoomPage(room, chats, rooms)
+	roomPage := pages.HomePage(room, chats, rooms)
 	fullPage := layouts.Base(room.Name, roomPage)
 	render(c, http.StatusOK, fullPage)
 }

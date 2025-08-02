@@ -3,9 +3,11 @@ package partials
 import "htmx/internal/models"
 
 templ RoomsList(rooms []*models.Room) {
-	<h3 class="text-lg font-bold mb-4">Rooms</h3>
-	<div id="rooms-container" class="space-y-2">
-		@RoomsListContent(rooms)
+    <div>
+        <h3 class="text-lg font-bold mb-4">Rooms</h3>
+        <div id="rooms-container" class="gap-2">
+            @RoomsListContent(rooms)
+        </div>
 	</div>
 
 	<!-- Create Room Form -->

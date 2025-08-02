@@ -31,7 +31,7 @@ func RoomsList(rooms []*models.Room) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<h3 class=\"text-lg font-bold mb-4\">Rooms</h3><div id=\"rooms-container\" class=\"space-y-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div><h3 class=\"text-lg font-bold mb-4\">Rooms</h3><div id=\"rooms-container\" class=\"gap-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -39,7 +39,7 @@ func RoomsList(rooms []*models.Room) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><!-- Create Room Form --><div class=\"mt-6 border-t pt-4\"><h4 class=\"font-medium mb-2\">Create a new room</h4><form hx-post=\"/api/rooms\" hx-target=\"#rooms-container\" hx-swap=\"innerHTML\" class=\"space-y-2\"><label class=\"label\" for=\"room-name\"><span class=\"label-text\">Room Name</span></label> <input id=\"room-name\" type=\"text\" name=\"name\" placeholder=\"Room name\" class=\"input input-sm input-bordered w-full\"> <button type=\"submit\" class=\"btn btn-sm btn-primary w-full\">Create</button></form><div id=\"room-form-error\" class=\"text-error text-sm mt-1\"></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><!-- Create Room Form --><div class=\"mt-6 border-t pt-4\"><h4 class=\"font-medium mb-2\">Create a new room</h4><form hx-post=\"/api/rooms\" hx-target=\"#rooms-container\" hx-swap=\"innerHTML\" class=\"space-y-2\"><label class=\"label\" for=\"room-name\"><span class=\"label-text\">Room Name</span></label> <input id=\"room-name\" type=\"text\" name=\"name\" placeholder=\"Room name\" class=\"input input-sm input-bordered w-full\"> <button type=\"submit\" class=\"btn btn-sm btn-primary w-full\">Create</button></form><div id=\"room-form-error\" class=\"text-error text-sm mt-1\"></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -80,7 +80,7 @@ func RoomsListContent(rooms []*models.Room) templ.Component {
 			var templ_7745c5c3_Var3 templ.SafeURL
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("/rooms/" + room.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 28, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 30, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -93,7 +93,7 @@ func RoomsListContent(rooms []*models.Room) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs("/rooms/" + room.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 29, Col: 34}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 31, Col: 34}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -106,7 +106,7 @@ func RoomsListContent(rooms []*models.Room) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/rooms/" + room.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 32, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 34, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -119,7 +119,7 @@ func RoomsListContent(rooms []*models.Room) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(room.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 34, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 36, Col: 40}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -133,7 +133,7 @@ func RoomsListContent(rooms []*models.Room) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(room.CreatedAt.Format("Jan 2, 2006"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 37, Col: 44}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/partials/RoomsList.templ`, Line: 39, Col: 44}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
