@@ -5,7 +5,7 @@ import (
 	"htmx/internal/components/pages"
 	"htmx/internal/components/partials"
 	"htmx/internal/models"
-	"htmx/internal/static"
+	"htmx/static"
 	"log"
 	"net/http"
 	"strings"
