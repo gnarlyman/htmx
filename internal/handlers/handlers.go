@@ -5,6 +5,7 @@ import (
 	"htmx/internal/components/pages"
 	"htmx/internal/components/partials"
 	"htmx/internal/models"
+	"htmx/internal/static"
 	"log"
 	"net/http"
 	"strings"
@@ -122,8 +123,9 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 		c.Next()
 	})
 
-	// Serve static files
-	router.Static("/static", "./static")
+	// Serve embedded static files
+	router.StaticFS("/static/css", static.GetCSSFileSystem())
+	router.StaticFS("/static/js", static.GetJSFileSystem())
 
 	// HTML routes
 	router.GET("/", h.Home)

@@ -4,7 +4,7 @@
   "description": "HTMX Chat with DaisyUI",
   "scripts": {
     "templ": "templ generate --watch",
-    "css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch=always",
+    "css": "npx tailwindcss -i ./internal/static/css/input.css -o ./internal/static/css/output.css --watch=always",
     "air": "air",
     "dev": "concurrently \"npm run templ\" \"npm run css\" \"npm run air\""
   },
