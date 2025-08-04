@@ -1,13 +1,18 @@
-.PHONY: dev templ tailwind server
+.PHONY: dev build generate
 
 dev:
-	make -j3 templ tailwind server
+	air
+
+build: generate
+	go build -o tmp/app
+
+generate: css templ
+
+css:
+	npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify
 
 templ:
-	templ generate --watch --proxy=http://localhost:8080 --proxyport=7331 --open-browser=false
+	templ generate
 
-tailwind:
-	npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
-
-server:
-	reflex -r '\.go$$' -s -- go run main.go
+watch:
+	air -c .air.toml
