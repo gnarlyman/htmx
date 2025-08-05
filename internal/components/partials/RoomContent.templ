@@ -12,7 +12,7 @@ templ RoomContent(room *models.Room, chats []*models.Chat) {
 			     hx-get={ "/api/rooms/" + room.ID + "/chats" }
 			     hx-trigger="new-chat from:body"
 			     hx-swap="innerHTML"
-			     class="space-y-4">
+			     class="space-y-2">
 				@MessagesList(chats)
 			</div>
 		</div>
