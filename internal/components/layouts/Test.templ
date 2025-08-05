@@ -15,13 +15,17 @@ templ Test(title string) {
         <div class="navbar bg-base-100 shadow-lg">
         </div>
         <main class="h-full flex flex-row justify-evenly items-center">
-            <div class="bg-amber-800 p-4 m-2 rounded shadow-md flex flex-col justify-between h-1/3 w-120">
+            <div class="bg-amber-800 p-4 m-2 rounded shadow-md flex flex-col h-[200px] w-120">
                 <h2 class="text-white font-bold mb-2">Card Title 1</h2>
-                <div class="flex-grow overflow-scroll flex flex-col justify-between">
-                    <p class="text-amber-200 h-10">This is some card content for Test 1.</p>
-                    <p class="text-amber-200 h-10">This is some card content for Test 2.</p>
-                    <p class="text-amber-200 h-10">This is some card content for Test 3.</p>
-                    <p class="text-amber-200 h-10">This is some card content for Test 4.</p>
+                <div class="flex-1 min-h-0">
+                    <div class="h-full overflow-y-auto">
+                        <p class="text-amber-200 h-10">This is some card content for Test 1.</p>
+                        <p class="text-amber-200 h-10">This is some card content for Test 2.</p>
+                        <p class="text-amber-200 h-10">This is some card content for Test 3.</p>
+                        <p class="text-amber-200 h-10">This is some card content for Test 4.</p>
+                        <p class="text-amber-200 h-10">This is some card content for Test 5.</p>
+                        <p class="text-amber-200 h-10">This is some card content for Test 6.</p>
+                    </div>
                 </div>
                 <button class="mt-4 bg-amber-600 text-white py-1 px-2 rounded">Action</button>
             </div>
