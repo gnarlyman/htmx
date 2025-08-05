@@ -9,6 +9,7 @@ templ Test(title string) {
         <title>{ title }</title>
         <script src="/static/js/htmx-2.0.6.min.js"></script>
         <link rel="stylesheet" href="/static/css/output.css"/>
+        <script src="/static/js/websocket.js"></script>
     </head>
     <body class="bg-amber-300 flex flex-col h-screen">
         <div class="navbar bg-base-100 shadow-lg">
@@ -25,7 +26,7 @@ templ Test(title string) {
                 <button class="mt-4 bg-amber-600 text-white py-1 px-2 rounded">Action</button>
             </div>
             <div class="bg-amber-800 p-4 m-2 rounded shadow-md flex flex-col justify-between h-90 w-120">
-                <h2 class="text-white font-bold mb-2">Card Title 2</h2>
+                <h2 class="text-white font-bold mb-2">Card Title</h2>
                 <p class="text-amber-200">This is some card content for Test 2.</p>
                 <button class="mt-4 bg-amber-600 text-white py-1 px-2 rounded">Action</button>
             </div>
