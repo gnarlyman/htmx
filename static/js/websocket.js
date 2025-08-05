@@ -8,5 +8,5 @@ ws.onmessage = function (event) {
 };
 ws.onclose = function () {
     setTimeout(() => location.reload(), 1000);
-    console.error("WebSocket connection closed. Reconnecting...");
+    // console.error("WebSocket connection closed. Reconnecting...");
 };

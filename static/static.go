@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-//go:embed css/* js/*
+//go:embed css/* js/* favicon.ico
 var embeddedFiles embed.FS
 
 // GetFileSystem returns an http.FileSystem that serves the embedded static files
@@ -28,4 +28,9 @@ func GetCSSFileSystem() http.FileSystem {
 // GetJSFileSystem returns an http.FileSystem that serves the embedded JS files
 func GetJSFileSystem() http.FileSystem {
 	return GetFileSystem("js")
+}
+
+// GetFavicon returns an http.FileSystem that serves favicon.ico
+func GetFavicon() http.FileSystem {
+	return http.FS(embeddedFiles)
 }

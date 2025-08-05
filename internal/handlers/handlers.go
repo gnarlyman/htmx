@@ -120,6 +120,9 @@ func (h *Handler) SetupRoutes(router *gin.Engine) {
 	// Serve embedded static files
 	router.StaticFS("/static/css", static.GetCSSFileSystem())
 	router.StaticFS("/static/js", static.GetJSFileSystem())
+	router.GET("/favicon.ico", func(c *gin.Context) {
+		c.FileFromFS("favicon.ico", static.GetFavicon())
+	})
 
 	// HTML routes
 	router.GET("/", h.Home)
