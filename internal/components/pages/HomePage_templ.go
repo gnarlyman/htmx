@@ -34,7 +34,7 @@ func HomePage(room *models.Room, chats []*models.Chat, rooms []*models.Room) tem
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid grid-cols-1 md:grid-cols-4 gap-4 h-full\"><!-- Left Sidebar: Rooms --><div class=\"col-span-1 card bg-base-100 shadow-xl h-full\"><div class=\"card-body flex flex-col justify-between p-4 h-full\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"grid grid-cols-1 md:grid-cols-4 gap-4 h-full\"><!-- Left Sidebar: Rooms --><div class=\"col-span-1 card bg-base-100 shadow-xl h-full overflow-hidden\"><div class=\"card-body p-4 h-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
