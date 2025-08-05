@@ -44,7 +44,7 @@ func RoomContent(room *models.Room, chats []*models.Chat) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</h2><!-- Messages Container --><div class=\"flex-grow overflow-y-auto mb-4 bg-base-200 rounded-box p-4\"><div id=\"messages-list\" hx-get=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</h2><!-- Messages Container --><div class=\"flex-1 min-h-0 overflow-y-auto mb-4 bg-base-200 rounded-box p-4\"><div id=\"messages-list\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -27,7 +27,7 @@ templ HomePage(room *models.Room, chats []*models.Chat, rooms []*models.Room) {
             </div>
         } else {
             <!-- Right Content: Chat -->
-            <div id="content" class="col-span-3 card bg-base-100 shadow-xl">
+            <div id="content" class="col-span-3 card bg-base-100 shadow-xl h-full overflow-hidden">
                 @partials.RoomContent(room, chats)
             </div>
         }

@@ -52,7 +52,7 @@ func HomePage(room *models.Room, chats []*models.Chat, rooms []*models.Room) tem
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<!-- Right Content: Chat --> <div id=\"content\" class=\"col-span-3 card bg-base-100 shadow-xl\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<!-- Right Content: Chat --> <div id=\"content\" class=\"col-span-3 card bg-base-100 shadow-xl h-full overflow-hidden\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
