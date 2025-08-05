@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"htmx/internal/handlers"
 	"htmx/internal/models"
 	"log"
+	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -28,9 +30,18 @@ func main() {
 	// Start WebSocket hub
 	handlers.StartHub()
 
-	// Start server
+	// Configure custom server with proper timeouts
+	srv := &http.Server{
+		Addr:           ":8080",
+		Handler:        router,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		IdleTimeout:    120 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
 	log.Println("Server starting on http://localhost:8080")
-	if err := router.Run(":8080"); err != nil {
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
